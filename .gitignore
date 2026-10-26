@@ -23,6 +23,3 @@ playwright-report/
 Thumbs.db
 .vscode/*
 !.vscode/extensions.json
-
-# design references (local only)
-FigmaDesigns/
