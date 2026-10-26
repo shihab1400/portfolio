@@ -1,0 +1,35 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  /** Render as a link to the homepage (header) or as plain text (footer). */
+  href?: string;
+}
+
+const { href } = Astro.props;
+const Tag = href ? 'a' : 'span';
+---
+
+<Tag class="logo" href={href} aria-label={href ? `${site.name}, home` : undefined}>
+  <svg viewBox="0 0 53 53" width="16" height="16" aria-hidden="true" focusable="false">
+    <path d="M0 14h26v13H13v13h13v13H0Z" fill="currentColor"></path>
+    <path d="M26 1h26v39H26V27h13V14H26Z" fill="none" stroke="currentColor" stroke-width="2"></path>
+  </svg>
+  <span>{site.name}</span>
+</Tag>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    font-weight: 700;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .logo svg {
+    flex: none;
+  }
+</style>

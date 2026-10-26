@@ -1,0 +1,81 @@
+---
+import { Image } from 'astro:assets';
+import SectionHeading from './SectionHeading.astro';
+import Icon from './Icon.astro';
+import portrait from '../assets/portrait-about.png';
+import { about } from '../data/about';
+---
+
+<section id="about-me" class="section container" aria-labelledby="about-title">
+  <div class="layout">
+    <div class="text">
+      <SectionHeading title="about-me" id="about-title" />
+      <div class="prose">
+        <p>{about.greeting}</p>
+        {about.preview.map((paragraph) => <p>{paragraph}</p>)}
+      </div>
+      <a class="btn" href="/about/">Read more <Icon name="arrow-right" /></a>
+    </div>
+    <div class="visual">
+      <span class="dots dots-a" aria-hidden="true"></span>
+      <span class="dots dots-b" aria-hidden="true"></span>
+      <Image
+        src={portrait}
+        alt={about.portraitAlt}
+        widths={[320, 480, 760]}
+        sizes="(min-width: 48rem) 340px, 80vw"
+        loading="lazy"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+  }
+
+  @media (min-width: 48rem) {
+    .layout {
+      grid-template-columns: 1.3fr 1fr;
+    }
+  }
+
+  .prose {
+    margin-bottom: 2rem;
+  }
+
+  .visual {
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 21rem);
+    margin-inline: auto;
+    border-bottom: 1px solid var(--color-accent);
+  }
+
+  .visual :global(img) {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    filter: grayscale(0.4);
+  }
+
+  .dots {
+    --dot-gap: 1rem;
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .dots-a {
+    top: 0.5rem;
+    left: 0;
+  }
+
+  .dots-b {
+    right: 0;
+    bottom: 25%;
+    z-index: 2;
+  }
+</style>

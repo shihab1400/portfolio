@@ -1,0 +1,109 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+import { socialLinks } from '../data/social-links';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container footer-grid">
+    <div class="identity">
+      <div class="brand-row">
+        <Logo />
+        <a class="email" href={site.emailLink} target="_blank" rel="noopener noreferrer">{site.email}</a>
+      </div>
+      <p>{site.role}</p>
+    </div>
+    <div class="media">
+      <h2>Media</h2>
+      <ul role="list">
+        {
+          socialLinks.map((link) => (
+            <li>
+              <a href={link.url} target="_blank" rel="noopener noreferrer">
+                <Icon name={link.icon} size={32} label={`${link.label} (opens in a new tab)`} />
+              </a>
+            </li>
+          ))
+        }
+        <li>
+          <a href={site.emailLink} target="_blank" rel="noopener noreferrer">
+            <Icon name="email" size={32} label={`Email ${site.email}`} />
+          </a>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <p class="container copyright">&copy; Copyright {year}. Made by {site.name}</p>
+</footer>
+
+<style>
+  .site-footer {
+    margin-top: var(--section-space);
+    padding-block: 2rem 1.5rem;
+    border-top: 1px solid var(--color-text-muted);
+  }
+
+  .footer-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 1.5rem 2rem;
+  }
+
+  .brand-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0 1.5rem;
+  }
+
+  .email {
+    color: var(--color-text-muted);
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .email:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .identity p {
+    margin-top: 0.5rem;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .media ul {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 0.25rem;
+    margin-left: -0.5rem;
+  }
+
+  .media a {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    color: var(--color-text-muted);
+    transition: color 0.2s var(--ease);
+  }
+
+  .media a:hover {
+    color: var(--color-accent);
+  }
+
+  .copyright {
+    margin-top: 2.5rem;
+    text-align: center;
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
+  }
+</style>

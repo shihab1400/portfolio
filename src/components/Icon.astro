@@ -1,0 +1,36 @@
+---
+import { icons, type IconName } from '../lib/icons';
+
+interface Props {
+  name: IconName;
+  size?: number;
+  /** Accessible label; omit for decorative icons next to visible text. */
+  label?: string;
+  class?: string;
+}
+
+const { name, size = 24, label, class: className } = Astro.props;
+const icon = icons[name];
+const paint =
+  icon.mode === 'fill'
+    ? { fill: 'currentColor' }
+    : {
+        fill: 'none',
+        stroke: 'currentColor',
+        'stroke-width': 2,
+        'stroke-linecap': 'round' as const,
+        'stroke-linejoin': 'round' as const,
+      };
+---
+
+<svg
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox={icon.viewBox}
+  width={size}
+  height={size}
+  class={className}
+  {...paint}
+  {...label ? { role: 'img', 'aria-label': label } : { 'aria-hidden': 'true' }}
+  focusable="false"
+  set:html={icon.body}
+/>

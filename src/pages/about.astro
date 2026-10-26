@@ -1,0 +1,180 @@
+---
+import { Image } from 'astro:assets';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import SkillGroups from '../components/SkillGroups.astro';
+import Icon from '../components/Icon.astro';
+import portrait from '../assets/portrait-about.png';
+import { about } from '../data/about';
+import { site } from '../data/site';
+import { personSchema } from '../lib/structured-data';
+
+const [intro, ...sections] = about.sections;
+---
+
+<BaseLayout
+  title="About me"
+  description={`About ${site.name}: background, interests, technical skills and approach to front-end development.`}
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    mainEntity: personSchema(Astro.site!),
+  }}
+>
+  <article class="container page">
+    <header class="page-header">
+      <SectionHeading title="about-me" level={1} rule="short" />
+      <p class="lead muted">Who am I?</p>
+    </header>
+
+    <div class="intro">
+      <div class="prose">
+        <p class="greeting">{about.greeting}</p>
+        {intro.paragraphs.map((p) => <p>{p}</p>)}
+        {about.preview.map((p) => <p>{p}</p>)}
+      </div>
+      <figure class="portrait">
+        <span class="dots" aria-hidden="true"></span>
+        <Image
+          src={portrait}
+          alt={about.portraitAlt}
+          widths={[320, 480, 760]}
+          sizes="(min-width: 48rem) 320px, 80vw"
+          loading="eager"
+        />
+      </figure>
+    </div>
+
+    <nav class="toc" aria-label="On this page">
+      <ul role="list">
+        <li><a href="#skills">skills</a></li>
+        {sections.map((s) => <li><a href={`#${s.id}`}>{s.heading.toLowerCase()}</a></li>)}
+      </ul>
+    </nav>
+
+    <section class="block" aria-labelledby="skills">
+      <h2 id="skills"><span class="accent" aria-hidden="true">#</span>Technical expertise</h2>
+      <SkillGroups />
+    </section>
+
+    {
+      sections.map((section) => (
+        <section class="block" aria-labelledby={section.id}>
+          <h2 id={section.id}><span class="accent" aria-hidden="true">#</span>{section.heading}</h2>
+          <div class="prose">
+            {section.paragraphs.map((p) => (
+              <p>{p}</p>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <aside class="cta" aria-label="Next steps">
+      <p>Want to see what I've built, or work together?</p>
+      <div class="cta-actions">
+        <a class="btn btn--muted" href="/projects/">View projects <Icon name="arrow-right" /></a>
+        <a class="btn" href="/#contacts">Contact me</a>
+      </div>
+    </aside>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(2rem, 6vw, 4rem);
+  }
+
+  .page-header {
+    margin-bottom: 2rem;
+  }
+
+  .page-header :global(.section-heading) {
+    margin-bottom: 0.75rem;
+  }
+
+  .greeting {
+    color: var(--color-text);
+  }
+
+  .intro {
+    display: grid;
+    gap: 2.5rem;
+    align-items: start;
+  }
+
+  @media (min-width: 48rem) {
+    .intro {
+      grid-template-columns: 1.5fr 1fr;
+    }
+  }
+
+  .portrait {
+    position: relative;
+    isolation: isolate;
+    width: min(100%, 20rem);
+    margin-inline: auto;
+    border-bottom: 1px solid var(--color-accent);
+  }
+
+  .portrait :global(img) {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    filter: grayscale(0.4);
+  }
+
+  .dots {
+    --dot-gap: 1rem;
+    top: 1rem;
+    left: 0;
+    width: 5rem;
+    height: 5rem;
+  }
+
+  .toc {
+    margin-block: 3rem 1rem;
+    padding-block: 1rem;
+    border-block: 1px solid var(--color-border-muted);
+  }
+
+  .toc ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1.25rem;
+  }
+
+  .toc a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--color-text-muted);
+  }
+
+  .toc a:hover {
+    color: var(--color-accent);
+  }
+
+  .block {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .block h2 {
+    margin-bottom: 1.25rem;
+    font-size: clamp(1.35rem, 1.1rem + 1vw, 1.75rem);
+    font-weight: 500;
+  }
+
+  .cta {
+    margin-top: clamp(3rem, 8vw, 5rem);
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border: 1px solid var(--color-text-muted);
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+</style>

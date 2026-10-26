@@ -1,0 +1,72 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import ContactForm from './ContactForm.astro';
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+
+<section id="contacts" class="section container" aria-labelledby="contacts-title">
+  <SectionHeading title="contacts" id="contacts-title" rule="short" />
+  <div class="layout">
+    <div class="intro">
+      <p class="muted">{site.contact.intro}</p>
+      <div class="direct">
+        <h3>Message me here</h3>
+        <a href={site.emailLink} target="_blank" rel="noopener noreferrer">
+          <Icon name="email" size={32} />
+          <span>{site.email}</span>
+        </a>
+      </div>
+    </div>
+    <ContactForm />
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 2.5rem;
+  }
+
+  @media (min-width: 48rem) {
+    .layout {
+      grid-template-columns: 1fr 1.2fr;
+      gap: 3rem;
+    }
+  }
+
+  .direct {
+    width: fit-content;
+    max-width: 100%;
+    margin-top: 2rem;
+    padding: 1rem;
+    border: 1px solid var(--color-text-muted);
+  }
+
+  h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .direct a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-height: 2.75rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+  }
+
+  .direct a span {
+    overflow-wrap: anywhere;
+  }
+
+  .direct a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+
+  .direct :global(svg) {
+    flex: none;
+  }
+</style>

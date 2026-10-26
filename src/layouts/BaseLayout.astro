@@ -1,0 +1,65 @@
+---
+import '@fontsource/fira-code/latin-400.css';
+import '@fontsource/fira-code/latin-500.css';
+import '@fontsource/fira-code/latin-600.css';
+import '@fontsource/fira-code/latin-700.css';
+import '../styles/global.css';
+import fira400 from '@fontsource/fira-code/files/fira-code-latin-400-normal.woff2?url';
+import SEO, { type SEOProps } from '../components/SEO.astro';
+import Navbar from '../components/Navbar.astro';
+import SocialSidebar from '../components/SocialSidebar.astro';
+import Footer from '../components/Footer.astro';
+import { site } from '../data/site';
+
+type Props = SEOProps;
+
+const themeConfig = {
+  fallback: site.theme.default,
+  respectSystem: site.theme.respectSystemPreference,
+};
+---
+
+<!doctype html>
+<html lang={site.locale} data-theme={site.theme.default}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Applies the saved theme before first paint to avoid a flash of the wrong theme. -->
+    <script is:inline define:vars={{ themeConfig }}>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        let theme;
+        try {
+          theme = localStorage.getItem('theme');
+        } catch {}
+        if (theme !== 'dark' && theme !== 'light') {
+          theme =
+            themeConfig.respectSystem && matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : themeConfig.respectSystem && matchMedia('(prefers-color-scheme: dark)').matches
+                ? 'dark'
+                : themeConfig.fallback;
+        }
+        root.dataset.theme = theme;
+      })();
+    </script>
+    <SEO {...Astro.props} />
+    <meta name="theme-color" content={site.theme.colors[site.theme.default]} />
+    <meta name="color-scheme" content="dark light" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="sitemap" href="/sitemap-index.xml" />
+    <link rel="preload" href={fira400} as="font" type="font/woff2" crossorigin />
+    <meta name="generator" content={Astro.generator} />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <Navbar />
+    <SocialSidebar />
+    <main id="main" tabindex="-1">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

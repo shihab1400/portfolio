@@ -1,0 +1,121 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import type { Project } from '../lib/projects';
+
+interface Props {
+  project: Project;
+  headingLevel?: 2 | 3;
+}
+
+const { project, headingLevel = 3 } = Astro.props;
+const { title, description, thumbnail, thumbnailAlt, technologies } = project.data;
+const Heading = `h${headingLevel}` as const;
+---
+
+<article class="card">
+  <Image
+    src={thumbnail}
+    alt={thumbnailAlt}
+    widths={[360, 540, 720]}
+    sizes="(min-width: 64rem) 330px, (min-width: 40rem) 50vw, 100vw"
+    loading="lazy"
+    class="thumb"
+  />
+  <ul class="tags tech" role="list" aria-label="Technologies">
+    {technologies.map((tech) => <li>{tech}</li>)}
+  </ul>
+  <div class="body">
+    <Heading class="title">
+      {/* The link's ::after covers the whole card, so the card has a single interactive element. */}
+      <a href={`/projects/${project.id}/`}>{title}</a>
+    </Heading>
+    <p class="muted">{description}</p>
+    <span class="more" aria-hidden="true">View project <Icon name="arrow-right" size={16} /></span>
+  </div>
+</article>
+
+<style>
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--color-text-muted);
+    background: var(--color-bg);
+    transition:
+      border-color 0.2s var(--ease),
+      transform 0.2s var(--ease);
+  }
+
+  .card:hover,
+  .card:focus-within {
+    border-color: var(--color-accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card:hover {
+      transform: translateY(-3px);
+    }
+  }
+
+  .card:focus-within {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  .thumb {
+    width: 100%;
+    aspect-ratio: 5 / 3;
+    object-fit: cover;
+    border-bottom: 1px solid var(--color-text-muted);
+  }
+
+  .tech {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--color-text-muted);
+    gap: 0.1rem 0.6rem;
+  }
+
+  .body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+    font-weight: 500;
+  }
+
+  .title a {
+    text-decoration: none;
+  }
+
+  .title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  /* The card outline replaces the link's own focus ring. */
+  .title a:focus-visible {
+    outline: none;
+  }
+
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: fit-content;
+    margin-top: auto;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--color-accent);
+    font-weight: 500;
+  }
+
+  .card:hover .more {
+    background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+</style>

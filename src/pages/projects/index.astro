@@ -1,0 +1,159 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionHeading from '../../components/SectionHeading.astro';
+import ProjectsGrid from '../../components/ProjectsGrid.astro';
+import Icon from '../../components/Icon.astro';
+import { getPublishedProjects } from '../../lib/projects';
+import { site } from '../../data/site';
+
+const projects = await getPublishedProjects();
+const categories = [...new Set(projects.map((p) => p.data.category))].sort();
+---
+
+<BaseLayout
+  title="Projects"
+  description={`All projects by ${site.name}: websites, tools and apps, with the technologies used to build each one.`}
+  jsonLd={{
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name: `Projects by ${site.name}`,
+    url: new URL('/projects/', Astro.site).href,
+    hasPart: projects.map((p) => ({
+      '@type': 'CreativeWork',
+      name: p.data.title,
+      url: new URL(`/projects/${p.id}/`, Astro.site).href,
+    })),
+  }}
+>
+  <div class="container page">
+    <a class="text-link back" href="/"><Icon name="arrow-left" /> Back to home</a>
+    <header>
+      <SectionHeading title="projects" level={1} rule="short" />
+      <p class="muted lead">
+        A list of everything I've built and shared. Select a project to read how it was made.
+      </p>
+    </header>
+
+    {
+      categories.length > 1 && (
+        <div class="filters" role="group" aria-label="Filter projects by category" data-filters hidden>
+          <button type="button" class="filter" aria-pressed="true" data-filter="all">
+            <span class="hash" aria-hidden="true">#</span>all
+          </button>
+          {categories.map((category) => (
+            <button type="button" class="filter" aria-pressed="false" data-filter={category}>
+              <span class="hash" aria-hidden="true">#</span>
+              {category.toLowerCase()}
+            </button>
+          ))}
+        </div>
+      )
+    }
+    <p class="sr-only" role="status" data-filter-status></p>
+
+    {projects.length > 0 && <ProjectsGrid projects={projects} headingLevel={2} />}
+    <p class="empty" data-empty hidden={projects.length > 0}>
+      No projects to show yet. Check back soon!
+    </p>
+  </div>
+</BaseLayout>
+
+<script>
+  const filters = document.querySelector<HTMLElement>('[data-filters]');
+  const grid = document.querySelector<HTMLElement>('[data-projects-grid]');
+  const empty = document.querySelector<HTMLElement>('[data-empty]')!;
+  const status = document.querySelector<HTMLElement>('[data-filter-status]')!;
+
+  if (filters && grid) {
+    filters.hidden = false;
+    const buttons = [...filters.querySelectorAll<HTMLButtonElement>('[data-filter]')];
+    const items = [...grid.querySelectorAll<HTMLElement>(':scope > li')];
+
+    filters.addEventListener('click', (event) => {
+      const button = (event.target as Element).closest<HTMLButtonElement>('[data-filter]');
+      if (!button) return;
+      const filter = button.dataset.filter!;
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b === button)));
+
+      let shown = 0;
+      items.forEach((item) => {
+        const match = filter === 'all' || item.dataset.category === filter;
+        item.hidden = !match;
+        if (match) shown += 1;
+      });
+      empty.hidden = shown > 0;
+      empty.textContent = shown > 0 ? '' : 'No projects match this category yet.';
+      status.textContent = `Showing ${shown} project${shown === 1 ? '' : 's'}.`;
+    });
+  }
+</script>
+
+<style>
+  .page {
+    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .back {
+    margin-bottom: 1.5rem;
+    color: var(--color-text-muted);
+  }
+
+  header :global(.section-heading) {
+    margin-bottom: 0.75rem;
+  }
+
+  .lead {
+    max-width: 40rem;
+    margin-bottom: 2rem;
+  }
+
+  .filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .filters[hidden] {
+    display: none;
+  }
+
+  .filter {
+    min-height: 2.75rem;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--color-text-muted);
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+  }
+
+  .filter:hover {
+    color: var(--color-text);
+  }
+
+  .filter[aria-pressed='true'] {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+    font-weight: 600;
+  }
+
+  .hash {
+    display: none;
+    color: var(--color-accent);
+  }
+
+  .filter[aria-pressed='true'] .hash {
+    display: inline;
+  }
+
+  .empty {
+    padding: 2rem;
+    border: 1px dashed var(--color-text-muted);
+    color: var(--color-text-muted);
+    text-align: center;
+  }
+
+  .empty[hidden] {
+    display: none;
+  }
+</style>

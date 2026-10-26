@@ -1,0 +1,57 @@
+---
+interface Props {
+  /** Heading text without the leading "#". */
+  title: string;
+  id?: string;
+  level?: 1 | 2;
+  /** Width of the decorative rule, as in the design. */
+  rule?: 'short' | 'long';
+}
+
+const { title, id, level = 2, rule = 'long' } = Astro.props;
+const Heading = `h${level}` as const;
+---
+
+<div class:list={['section-heading', `rule-${rule}`]}>
+  <Heading id={id}><span class="accent" aria-hidden="true">#</span>{title}</Heading>
+  <span class="rule" aria-hidden="true"></span>
+  {Astro.slots.has('action') && <div class="action"><slot name="action" /></div>}
+</div>
+
+<style>
+  .section-heading {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: clamp(1.5rem, 4vw, 3rem);
+  }
+
+  h1,
+  h2 {
+    flex: none;
+    font-size: clamp(1.75rem, 1.4rem + 1.5vw, 2rem);
+    font-weight: 500;
+  }
+
+  .rule {
+    flex: 0 1 30rem;
+    min-width: 1.5rem;
+    height: 1px;
+    background: var(--color-accent);
+  }
+
+  .rule-short .rule {
+    flex-basis: 8rem;
+  }
+
+  .action {
+    margin-left: auto;
+    flex: none;
+  }
+
+  @media (max-width: 30rem) {
+    .section-heading:has(.action) .rule {
+      display: none;
+    }
+  }
+</style>

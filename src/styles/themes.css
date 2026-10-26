@@ -1,0 +1,36 @@
+/*
+ * Theme tokens. Every colour in the UI comes from these custom properties, so a
+ * palette change here applies everywhere. Dark is the default (and the no-JS theme).
+ */
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --color-bg: #282c33;
+  --color-surface: #2f333b;
+  --color-header: rgb(40 44 51 / 0.9);
+  --color-text: #ffffff;
+  --color-text-muted: #abb2bf;
+  --color-accent: #c778dd;
+  --color-accent-contrast: #282c33;
+  --color-border: #abb2bf;
+  --color-border-muted: #777d88;
+  --color-decor: #abb2bf;
+  --color-success: #8fdc9a;
+  --color-danger: #ff9b9b;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --color-bg: #f6f6f8;
+  --color-surface: #ffffff;
+  --color-header: rgb(246 246 248 / 0.9);
+  --color-text: #1f2228;
+  --color-text-muted: #4f5563;
+  --color-accent: #8a3ba3;
+  --color-accent-contrast: #ffffff;
+  --color-border: #6e7482;
+  --color-border-muted: #a2a7b2;
+  --color-decor: #8e93a0;
+  --color-success: #1d6b2c;
+  --color-danger: #b42323;
+}

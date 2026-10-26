@@ -1,0 +1,35 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/Hero.astro';
+import Quote from '../components/Quote.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+import ProjectsGrid from '../components/ProjectsGrid.astro';
+import Skills from '../components/Skills.astro';
+import AboutPreview from '../components/AboutPreview.astro';
+import ContactSection from '../components/ContactSection.astro';
+import Icon from '../components/Icon.astro';
+import { getFeaturedProjects } from '../lib/projects';
+import { personSchema, websiteSchema } from '../lib/structured-data';
+
+const featured = await getFeaturedProjects(3);
+const siteUrl = Astro.site!;
+---
+
+<BaseLayout jsonLd={[websiteSchema(siteUrl), personSchema(siteUrl)]}>
+  <Hero />
+  <Quote />
+
+  <section id="projects" class="section container" aria-labelledby="projects-title">
+    <SectionHeading title="projects" id="projects-title">
+      <a slot="action" class="text-link" href="/projects/">
+        View all <span class="sr-only">projects</span>
+        <Icon name="arrow-right" />
+      </a>
+    </SectionHeading>
+    <ProjectsGrid projects={featured} />
+  </section>
+
+  <Skills />
+  <AboutPreview />
+  <ContactSection />
+</BaseLayout>

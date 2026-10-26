@@ -1,0 +1,89 @@
+---
+import { site } from '../data/site';
+
+interface Props {
+  text?: string;
+  author?: string;
+}
+
+const { text = site.quote.text, author = site.quote.author } = Astro.props;
+---
+
+<figure class="quote container">
+  <blockquote>
+    <span class="mark mark-open" aria-hidden="true">&ldquo;</span>
+    <p>{text}</p>
+    <span class="mark mark-close" aria-hidden="true">&rdquo;</span>
+  </blockquote>
+  <figcaption>&mdash; {author}</figcaption>
+  <span class="outline-box deco" aria-hidden="true"></span>
+</figure>
+
+<style>
+  .quote {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    max-width: 44rem;
+    padding-top: clamp(4rem, 9vw, 7rem);
+  }
+
+  blockquote {
+    position: relative;
+    width: 100%;
+    padding: clamp(1.25rem, 3vw, 2rem);
+    border: 1px solid var(--color-text-muted);
+  }
+
+  blockquote p {
+    font-size: clamp(1.05rem, 0.9rem + 0.8vw, 1.5rem);
+    font-weight: 500;
+    text-align: center;
+  }
+
+  .mark {
+    position: absolute;
+    padding-inline: 0.4rem;
+    background: var(--color-bg);
+    color: var(--color-text-muted);
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 3.5rem;
+    font-weight: 700;
+    line-height: 0.6;
+    height: 1.5rem;
+  }
+
+  .mark-open {
+    top: -0.75rem;
+    left: 0.75rem;
+  }
+
+  .mark-close {
+    right: 0.75rem;
+    bottom: -0.75rem;
+  }
+
+  figcaption {
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--color-text-muted);
+    border-top: 0;
+    font-size: clamp(1.05rem, 0.9rem + 0.8vw, 1.5rem);
+  }
+
+  .deco {
+    display: none;
+  }
+
+  /* The off-canvas square from the design, only where the viewport is wide enough. */
+  @media (min-width: 80rem) {
+    .deco {
+      display: block;
+      top: 45%;
+      right: calc(-1 * (50vw - 50%) + 0.5rem);
+      width: 5.5rem;
+      height: 5.5rem;
+      border-right: 0;
+    }
+  }
+</style>

@@ -1,0 +1,19 @@
+---
+import StatusLayout from '../../layouts/StatusLayout.astro';
+import { site } from '../../data/site';
+---
+
+<StatusLayout
+  heading="not-sent"
+  title="Message not sent"
+  description="Your message could not be sent."
+>
+  <p>
+    Sorry, your message could not be sent. Please check that every required field is filled in
+    with a valid email address, then try again. You can also email me directly at
+    <a href={site.emailLink} target="_blank" rel="noopener noreferrer">{site.email}</a>.
+  </p>
+  <Fragment slot="actions">
+    <a class="btn" href="/#contacts">Try again</a>
+  </Fragment>
+</StatusLayout>

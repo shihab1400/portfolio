@@ -1,0 +1,15 @@
+---
+import StatusLayout from '../layouts/StatusLayout.astro';
+---
+
+<StatusLayout
+  heading="404"
+  title="Page not found"
+  description="The page you were looking for doesn't exist or has moved."
+>
+  <p>Sorry, this page doesn't exist. It may have been moved, or the link might be mistyped.</p>
+  <Fragment slot="actions">
+    <a class="btn" href="/">Back to home</a>
+    <a class="btn btn--muted" href="/projects/">Browse projects</a>
+  </Fragment>
+</StatusLayout>

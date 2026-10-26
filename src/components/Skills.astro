@@ -1,0 +1,86 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import SkillGroups from './SkillGroups.astro';
+---
+
+<section id="skills" class="section container" aria-labelledby="skills-title">
+  <SectionHeading title="skills" id="skills-title" rule="short" />
+  <div class="layout">
+    <div class="art" aria-hidden="true">
+      <span class="dots dots-a"></span>
+      <span class="dots dots-b"></span>
+      <svg class="logo-outline" viewBox="0 0 53 53" focusable="false">
+        <path d="M1 15h24v11H12v14h13v12H1Z"></path>
+        <path d="M26 2h25v37H26V27h13V13H26Z"></path>
+      </svg>
+      <span class="outline-box box-a"></span>
+      <span class="outline-box box-b"></span>
+    </div>
+    <SkillGroups />
+  </div>
+</section>
+
+<style>
+  .layout {
+    display: grid;
+    gap: 2rem;
+  }
+
+  .art {
+    display: none;
+  }
+
+  @media (min-width: 56rem) {
+    .layout {
+      grid-template-columns: 22rem 1fr;
+    }
+
+    .art {
+      display: block;
+      position: relative;
+      min-height: 17rem;
+    }
+  }
+
+  .dots {
+    --dot-gap: 1rem;
+  }
+
+  .dots-a {
+    top: 1rem;
+    left: 1.25rem;
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .dots-b {
+    top: 7rem;
+    left: 9rem;
+    width: 4rem;
+    height: 4rem;
+  }
+
+  .logo-outline {
+    position: absolute;
+    left: 1.25rem;
+    top: 9rem;
+    width: 7rem;
+    fill: none;
+    stroke: var(--color-accent);
+    stroke-width: 0.8;
+  }
+
+  .box-a {
+    top: 0;
+    left: 13rem;
+    width: 5.5rem;
+    height: 5.5rem;
+  }
+
+  .box-b {
+    top: 11rem;
+    left: 17rem;
+    width: 3.25rem;
+    height: 3.25rem;
+  }
+</style>

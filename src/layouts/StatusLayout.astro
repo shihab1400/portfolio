@@ -1,0 +1,35 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SectionHeading from '../components/SectionHeading.astro';
+
+interface Props {
+  /** Short heading shown after the "#". */
+  heading: string;
+  title: string;
+  description: string;
+}
+
+const { heading, title, description } = Astro.props;
+---
+
+<BaseLayout title={title} description={description} noindex>
+  <div class="container status-page">
+    <SectionHeading title={heading} level={1} rule="short" />
+    <div class="prose"><slot /></div>
+    <div class="actions"><slot name="actions" /></div>
+  </div>
+</BaseLayout>
+
+<style>
+  .status-page {
+    padding-top: clamp(3rem, 10vw, 6rem);
+    min-height: 50vh;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 2rem;
+  }
+</style>

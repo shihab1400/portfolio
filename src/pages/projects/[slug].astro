@@ -1,0 +1,308 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { Image, getImage } from 'astro:assets';
+import { render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectsGrid from '../../components/ProjectsGrid.astro';
+import Icon from '../../components/Icon.astro';
+import { getPublishedProjects, getRelatedProjects, type Project } from '../../lib/projects';
+import { site } from '../../data/site';
+
+export const getStaticPaths = (async () => {
+  const projects = await getPublishedProjects();
+  return projects.map((project) => ({
+    params: { slug: project.id },
+    props: { project, related: getRelatedProjects(project, projects) },
+  }));
+}) satisfies GetStaticPaths;
+
+interface Props {
+  project: Project;
+  related: Project[];
+}
+
+const { project, related } = Astro.props;
+const { data } = project;
+const { Content } = await render(project);
+
+const hero = data.heroImage ?? data.thumbnail;
+const heroAlt = data.heroImage ? (data.heroImageAlt ?? data.title) : data.thumbnailAlt;
+const ogImage = await getImage({ src: data.thumbnail, width: 1200, format: 'jpg' });
+const pageUrl = new URL(`/projects/${project.id}/`, Astro.site).href;
+
+const dateLabel = data.publishDate.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: data.title,
+  description: data.description,
+  url: pageUrl,
+  image: new URL(ogImage.src, Astro.site).href,
+  datePublished: data.publishDate.toISOString().slice(0, 10),
+  keywords: data.technologies.join(', '),
+  genre: data.category,
+  author: { '@type': 'Person', name: site.name, url: Astro.site!.href },
+};
+---
+
+<BaseLayout
+  title={data.title}
+  description={data.description}
+  image={ogImage.src}
+  imageAlt={data.thumbnailAlt}
+  type="article"
+  jsonLd={jsonLd}
+>
+  <article class="container page">
+    <a class="text-link back" href="/projects/"><Icon name="arrow-left" /> All projects</a>
+
+    <header class="header">
+      <p class="eyebrow">
+        <span class="accent" aria-hidden="true">#</span>{data.category.toLowerCase()}
+        <span aria-hidden="true">·</span>
+        <time datetime={data.publishDate.toISOString()}>{dateLabel}</time>
+      </p>
+      <h1>{data.title}</h1>
+      <p class="summary muted">{data.description}</p>
+      {
+        (data.liveUrl || data.repositoryUrl) && (
+          <div class="links">
+            {data.liveUrl && (
+              <a class="btn" href={data.liveUrl} target="_blank" rel="noopener noreferrer">
+                Live site <Icon name="external-link" />
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+            )}
+            {data.repositoryUrl && (
+              <a class="btn btn--muted" href={data.repositoryUrl} target="_blank" rel="noopener noreferrer">
+                Source code <Icon name="code" />
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+            )}
+          </div>
+        )
+      }
+    </header>
+
+    <Image
+      src={hero}
+      alt={heroAlt}
+      widths={[480, 800, 1200, 1600]}
+      sizes="(min-width: 64rem) 1024px, 100vw"
+      loading="eager"
+      fetchpriority="high"
+      class="hero-image"
+    />
+
+    <div class="layout">
+      <div class="main prose">
+        <h2>Overview</h2>
+        <Content />
+
+        {
+          data.purpose && (
+            <>
+              <h2>Purpose</h2>
+              <p>{data.purpose}</p>
+            </>
+          )
+        }
+
+        {
+          data.features.length > 0 && (
+            <>
+              <h2>Main features</h2>
+              <ul>
+                {data.features.map((feature) => (
+                  <li>{feature}</li>
+                ))}
+              </ul>
+            </>
+          )
+        }
+
+        {
+          (data.challenge || data.solution) && (
+            <>
+              <h2>Challenges and solutions</h2>
+              {data.challenge && (
+                <p>
+                  <strong>Challenge:</strong> {data.challenge}
+                </p>
+              )}
+              {data.solution && (
+                <p>
+                  <strong>Solution:</strong> {data.solution}
+                </p>
+              )}
+            </>
+          )
+        }
+
+        {
+          data.results && (
+            <>
+              <h2>Results</h2>
+              <p>{data.results}</p>
+            </>
+          )
+        }
+      </div>
+
+      <aside class="meta" aria-labelledby="tech-heading">
+        <h2 id="tech-heading">Technologies</h2>
+        <ul class="tags" role="list">
+          {data.technologies.map((tech) => <li>{tech}</li>)}
+        </ul>
+
+        {
+          data.repositoryUrl && (
+            <section class="repo" aria-labelledby="repo-heading">
+              <h2 id="repo-heading">GitHub</h2>
+              <a class="text-link repo-link" href={data.repositoryUrl} target="_blank" rel="noopener noreferrer">
+                <Icon name="github" size={20} />
+                <span>{new URL(data.repositoryUrl).pathname.slice(1)}</span>
+                <span class="sr-only">(opens in a new tab)</span>
+              </a>
+            </section>
+          )
+        }
+      </aside>
+    </div>
+
+    <hr style="margin-top: 4rem;">
+
+    {
+      related.length > 0 && (
+        <section class="related" aria-labelledby="related-heading">
+          <h2 id="related-heading">
+            <span class="accent" aria-hidden="true">#</span>related-projects
+          </h2>
+          <ProjectsGrid projects={related} />
+        </section>
+      )
+    }
+
+    <aside class="cta" aria-label="Contact">
+      <p>Have a project in mind? I'd be glad to hear about it.</p>
+      <div class="cta-actions">
+        <a class="btn" href="/#contacts">Contact me</a>
+        <a class="btn btn--muted" href="/projects/"><Icon name="arrow-left" /> All projects</a>
+      </div>
+    </aside>
+  </article>
+</BaseLayout>
+
+<style>
+  .page {
+    padding-top: clamp(1.5rem, 4vw, 2.5rem);
+  }
+
+  .back {
+    color: var(--color-text-muted);
+  }
+
+  .header {
+    margin-block: 1.5rem 2rem;
+  }
+
+  .eyebrow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.5rem;
+    color: var(--color-text-muted);
+  }
+
+  h1 {
+    margin-block: 0.5rem 1rem;
+    font-size: clamp(1.9rem, 1.4rem + 2.5vw, 2.75rem);
+    font-weight: 600;
+  }
+
+  .summary {
+    max-width: 42rem;
+    font-size: 1.1rem;
+  }
+
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1.5rem;
+  }
+
+  .hero-image {
+    width: 100%;
+    aspect-ratio: 5 / 3;
+    object-fit: cover;
+    border: 1px solid var(--color-text-muted);
+  }
+
+  .layout {
+    display: grid;
+    gap: 2.5rem;
+    margin-top: 2.5rem;
+  }
+
+  @media (min-width: 56rem) {
+    .layout {
+      grid-template-columns: 1fr 15rem;
+    }
+
+    .meta {
+      position: sticky;
+      top: calc(var(--nav-height) + 1rem);
+      align-self: start;
+    }
+  }
+
+  .main > :first-child {
+    margin-top: 0;
+  }
+
+  .meta {
+    padding: 1rem;
+    border: 1px solid var(--color-text-muted);
+  }
+
+  .meta h2 {
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+  }
+
+  .repo {
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-text-muted);
+  }
+
+  .repo-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    overflow-wrap: anywhere;
+  }
+
+  .related {
+    margin-top: clamp(3rem, 8vw, 5rem);
+  }
+
+  .related h2 {
+    margin-bottom: 1.5rem;
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+    font-weight: 500;
+  }
+
+  .cta {
+    margin-top: clamp(3rem, 8vw, 5rem);
+    padding: clamp(1.25rem, 4vw, 2rem);
+    border: 1px solid var(--color-text-muted);
+  }
+
+  .cta-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: 1rem;
+  }
+</style>

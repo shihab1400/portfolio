@@ -1,0 +1,14 @@
+---
+import StatusLayout from '../../layouts/StatusLayout.astro';
+---
+
+<StatusLayout
+  heading="message-sent"
+  title="Message sent"
+  description="Your message was delivered."
+>
+  <p>Thanks for getting in touch! Your message has been sent and I'll reply as soon as I can.</p>
+  <Fragment slot="actions">
+    <a class="btn" href="/">Back to home</a>
+  </Fragment>
+</StatusLayout>

@@ -1,0 +1,51 @@
+---
+import { skillGroups } from '../data/skills';
+
+interface Props {
+  headingLevel?: 3 | 4;
+}
+
+const { headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as const;
+---
+
+<ul class="skill-groups" role="list">
+  {
+    skillGroups.map((group) => (
+      <li class="group">
+        <Heading>{group.title}</Heading>
+        <ul class="tags" role="list">
+          {group.items.map((item) => (
+            <li>{item}</li>
+          ))}
+        </ul>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .skill-groups {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 11rem), 1fr));
+    gap: 1rem;
+    align-items: start;
+  }
+
+  .group {
+    border: 1px solid var(--color-text-muted);
+  }
+
+  h3,
+  h4 {
+    padding: 0.5rem;
+    border-bottom: 1px solid var(--color-text-muted);
+    font-size: 1rem;
+    font-weight: 600;
+  }
+
+  .tags {
+    padding: 0.5rem;
+    font-size: 0.95rem;
+  }
+</style>

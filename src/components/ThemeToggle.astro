@@ -1,0 +1,76 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+---
+
+<button
+  type="button"
+  class="theme-toggle"
+  data-theme-toggle
+  data-colors={JSON.stringify(site.theme.colors)}
+  aria-label="Switch to light theme"
+>
+  <Icon name="sun" size={20} class="icon-sun" />
+  <Icon name="moon" size={20} class="icon-moon" />
+</button>
+
+<script>
+  type Theme = 'dark' | 'light';
+
+  const root = document.documentElement;
+  const buttons = document.querySelectorAll<HTMLButtonElement>('[data-theme-toggle]');
+  const colors = JSON.parse(buttons[0]?.dataset.colors ?? '{}') as Record<Theme, string>;
+
+  function apply(theme: Theme) {
+    root.dataset.theme = theme;
+    const next = theme === 'dark' ? 'light' : 'dark';
+    buttons.forEach((button) => {
+      button.setAttribute('aria-label', `Switch to ${next} theme`);
+      button.title = `Switch to ${next} theme`;
+    });
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', colors[theme]);
+  }
+
+  apply(root.dataset.theme === 'light' ? 'light' : 'dark');
+
+  buttons.forEach((button) =>
+    button.addEventListener('click', () => {
+      const theme: Theme = root.dataset.theme === 'dark' ? 'light' : 'dark';
+      apply(theme);
+      try {
+        localStorage.setItem('theme', theme);
+      } catch {
+        // Storage can be unavailable (e.g. blocked cookies); the theme still applies to this page.
+      }
+    }),
+  );
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid transparent;
+    background: none;
+    color: var(--color-text-muted);
+    cursor: pointer;
+    transition: color 0.2s var(--ease);
+  }
+
+  .theme-toggle:hover {
+    color: var(--color-accent);
+  }
+
+  /* The icon shows the theme the button switches to. */
+  :global([data-theme='dark']) .theme-toggle :global(.icon-moon),
+  :global([data-theme='light']) .theme-toggle :global(.icon-sun) {
+    display: none;
+  }
+
+  :global(html:not(.js)) .theme-toggle {
+    display: none;
+  }
+</style>

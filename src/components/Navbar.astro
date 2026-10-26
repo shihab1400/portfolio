@@ -1,0 +1,252 @@
+---
+import Logo from './Logo.astro';
+import Icon from './Icon.astro';
+import ThemeToggle from './ThemeToggle.astro';
+import { navItems } from '../data/navigation';
+
+const path = Astro.url.pathname;
+const isHome = path === '/';
+// Off the homepage, highlight the item for the current page; on it, the scrollspy script takes over.
+const activeHref = isHome
+  ? '/#home'
+  : navItems.find((item) => item.activeOn && path.startsWith(item.activeOn))?.href;
+---
+
+<header class="site-header" data-header>
+  <div class="container header-inner">
+    <Logo href="/" />
+    <nav aria-label="Main">
+      <button
+        type="button"
+        class="menu-toggle"
+        aria-expanded="false"
+        aria-controls="nav-menu"
+        aria-label="Open menu"
+        data-menu-toggle
+      >
+        <Icon name="menu" size={24} class="icon-open" />
+        <Icon name="close" size={24} class="icon-close" />
+      </button>
+      <ul id="nav-menu" class="nav-menu" role="list" data-scrollspy={isHome ? '' : undefined}>
+        {
+          navItems.map((item) => (
+            <li>
+              <a
+                href={item.href}
+                data-section={item.section}
+                aria-current={item.href === activeHref ? (isHome ? 'location' : 'page') : undefined}
+              >
+                <span class="accent" aria-hidden="true">#</span>{item.label}
+              </a>
+            </li>
+          ))
+        }
+        <li class="toggle-item"><ThemeToggle /></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-header]')!;
+  const toggle = header.querySelector<HTMLButtonElement>('[data-menu-toggle]')!;
+  const menu = header.querySelector<HTMLUListElement>('#nav-menu')!;
+
+  function setOpen(open: boolean, { restoreFocus = false } = {}) {
+    header.classList.toggle('nav-open', open);
+    toggle.setAttribute('aria-expanded', String(open));
+    toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    if (!open && restoreFocus) toggle.focus();
+  }
+
+  toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+
+  menu.addEventListener('click', (event) => {
+    if ((event.target as Element).closest('a')) setOpen(false);
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && header.classList.contains('nav-open')) {
+      setOpen(false, { restoreFocus: true });
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (header.classList.contains('nav-open') && !header.contains(event.target as Node)) {
+      setOpen(false);
+    }
+  });
+
+  // Close the menu once keyboard focus leaves the header.
+  header.addEventListener('focusout', (event) => {
+    const next = event.relatedTarget as Node | null;
+    if (next && !header.contains(next)) setOpen(false);
+  });
+
+  matchMedia('(min-width: 48rem)').addEventListener('change', (event) => {
+    if (event.matches) setOpen(false);
+  });
+
+  // Homepage scrollspy: mark the nav link of the section currently in view.
+  if (menu.hasAttribute('data-scrollspy') && 'IntersectionObserver' in window) {
+    const links = [...menu.querySelectorAll<HTMLAnchorElement>('a[data-section]')];
+    const sections = links
+      .map((link) => document.getElementById(link.dataset.section!))
+      .filter((section): section is HTMLElement => section !== null);
+    const visible = new Set<string>();
+
+    const update = () => {
+      const current = sections.find((s) => visible.has(s.id))?.id ?? 'home';
+      links.forEach((link) => {
+        if (link.dataset.section === current) link.setAttribute('aria-current', 'location');
+        else link.removeAttribute('aria-current');
+      });
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) visible.add(entry.target.id);
+          else visible.delete(entry.target.id);
+        });
+        update();
+      },
+      // A band across the upper part of the viewport decides which section is "current".
+      { rootMargin: '-30% 0px -60% 0px' },
+    );
+    sections.forEach((section) => observer.observe(section));
+  }
+</script>
+
+<style>
+  .site-header {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    background: var(--color-bg);
+  }
+
+  @supports (backdrop-filter: blur(8px)) or (-webkit-backdrop-filter: blur(8px)) {
+    .site-header {
+      background: var(--color-header);
+      -webkit-backdrop-filter: blur(8px);
+      backdrop-filter: blur(8px);
+    }
+  }
+
+  .header-inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    min-height: var(--nav-height);
+  }
+
+  .nav-menu {
+    display: flex;
+    align-items: center;
+    gap: clamp(0.75rem, 2.5vw, 2rem);
+  }
+
+  .nav-menu a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 2.75rem;
+    color: var(--color-text-muted);
+    text-decoration: none;
+    transition: color 0.2s var(--ease);
+  }
+
+  .nav-menu a:hover {
+    color: var(--color-text);
+  }
+
+  /* Active item: brighter, bolder and underlined, so it isn't signalled by colour alone. */
+  .nav-menu a[aria-current] {
+    color: var(--color-text);
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 1px;
+  }
+
+  .menu-toggle {
+    display: none;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    padding: 0;
+    border: 1px solid var(--color-border-muted);
+    background: none;
+    cursor: pointer;
+  }
+
+  .menu-toggle :global(.icon-close),
+  .nav-open .menu-toggle :global(.icon-open) {
+    display: none;
+  }
+
+  .nav-open .menu-toggle :global(.icon-close) {
+    display: block;
+  }
+
+  @media (max-width: 47.99rem) {
+    /* Without JavaScript the links simply wrap under the logo. */
+    :global(html:not(.js)) .header-inner {
+      flex-wrap: wrap;
+      padding-block: 0.5rem;
+    }
+
+    :global(html:not(.js)) .nav-menu {
+      flex-wrap: wrap;
+      gap: 0 1rem;
+    }
+
+    :global(.js) .menu-toggle {
+      display: grid;
+    }
+
+    :global(.js) .nav-menu {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 0;
+      max-height: calc(100dvh - var(--nav-height));
+      overflow-y: auto;
+      padding: 0.5rem 1rem 1rem;
+      border: 1px solid var(--color-border-muted);
+      background: var(--color-bg);
+      visibility: hidden;
+      opacity: 0;
+      transform: translateY(-0.5rem);
+      transition:
+        opacity 0.2s var(--ease),
+        transform 0.2s var(--ease),
+        visibility 0s linear 0.2s;
+    }
+
+    :global(.js) .nav-open .nav-menu {
+      visibility: visible;
+      opacity: 1;
+      transform: none;
+      transition:
+        opacity 0.2s var(--ease),
+        transform 0.2s var(--ease);
+    }
+
+    :global(.js) .nav-menu a {
+      display: flex;
+      font-size: 1.125rem;
+    }
+
+    :global(.js) .toggle-item {
+      margin-top: 0.5rem;
+      padding-top: 0.5rem;
+      border-top: 1px solid var(--color-border-muted);
+    }
+  }
+</style>
