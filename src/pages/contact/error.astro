@@ -11,7 +11,7 @@ import { site } from '../../data/site';
   <p>
     Sorry, your message could not be sent. Please check that every required field is filled in
     with a valid email address, then try again. You can also email me directly at
-    <a href={site.emailLink} target="_blank" rel="noopener noreferrer">{site.email}</a>.
+    <a href={site.emailLink} data-gmail={site.email} target="_blank" rel="noopener noreferrer">{site.email}</a>.
   </p>
   <Fragment slot="actions">
     <a class="btn" href="/#contacts">Try again</a>

@@ -61,5 +61,35 @@ const themeConfig = {
       <slot />
     </main>
     <Footer />
+    <script>
+      // On phones, Gmail links (`data-gmail`) open the Gmail app's compose screen instead of
+      // Gmail in the browser. Desktop and no-JS visitors keep the link's Gmail web compose URL.
+      const ua = navigator.userAgent;
+      const isAndroid = /Android/i.test(ua);
+      // iPadOS reports a Mac user agent, so touch support tells it apart from a real Mac.
+      const isIOS = /iPhone|iPad|iPod/i.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+
+      if (isAndroid || isIOS) {
+        document.addEventListener('click', (event) => {
+          const link = (event.target as Element).closest<HTMLAnchorElement>('a[data-gmail]');
+          if (!link || event.defaultPrevented) return;
+          event.preventDefault();
+          const to = link.dataset.gmail!;
+          if (isAndroid) {
+            // Intent link to the Gmail app; Chrome opens the fallback (Gmail web) if it isn't installed.
+            const fallback = encodeURIComponent(link.href);
+            location.href = `intent:${to}#Intent;scheme=mailto;package=com.google.android.gm;S.browser_fallback_url=${fallback};end`;
+          } else {
+            // iOS has no fallback for app links: if the page is still visible shortly after,
+            // Gmail isn't installed, so hand over to the default mail app instead.
+            const timer = setTimeout(() => {
+              if (!document.hidden) location.href = `mailto:${to}`;
+            }, 1500);
+            document.addEventListener('visibilitychange', () => clearTimeout(timer), { once: true });
+            location.href = `googlegmail:///co?to=${encodeURIComponent(to)}`;
+          }
+        });
+      }
+    </script>
   </body>
 </html>

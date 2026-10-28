@@ -19,12 +19,15 @@ test.describe('desktop navigation', () => {
       if (section === 'home') await page.evaluate(() => window.scrollTo({ top: 2000, behavior: 'instant' }));
       await page.getByRole('navigation', { name: 'Main' }).locator(`a[href="/#${section}"]`).click();
       await expect(page).toHaveURL(new RegExp(`/#${section}$`));
-      const target = page.locator(`#${section}`);
-      await expect(target).toBeInViewport();
+      // Sections cancel their top padding with a negative scroll-margin, so the padding may
+      // scroll under the navbar by design; the section's heading must stay visible below it.
+      const headingId = await page.locator(`#${section}`).getAttribute('aria-labelledby');
+      const heading = page.locator(`#${headingId}`);
+      await expect(heading).toBeInViewport();
       await expect
         .poll(async () => {
           const headerHeight = (await page.locator('header.site-header').boundingBox())!.height;
-          return (await target.boundingBox())!.y >= headerHeight - 1;
+          return (await heading.boundingBox())!.y >= headerHeight - 1;
         })
         .toBe(true);
     });

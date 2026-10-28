@@ -12,7 +12,7 @@ const year = new Date().getFullYear();
     <div class="identity">
       <div class="brand-row">
         <Logo />
-        <a class="contact-link" href={site.emailLink} target="_blank" rel="noopener noreferrer">{site.email}</a>
+        <a class="contact-link" href={site.emailLink} data-gmail={site.email} target="_blank" rel="noopener noreferrer">{site.email}</a>
         <a class="contact-link" href={site.phoneLink}>{site.phoneDisplay}</a>
       </div>
       <p>{site.role}</p>
@@ -30,7 +30,7 @@ const year = new Date().getFullYear();
           ))
         }
         <li>
-          <a href={site.emailLink} target="_blank" rel="noopener noreferrer">
+          <a href={site.emailLink} data-gmail={site.email} target="_blank" rel="noopener noreferrer">
             <Icon name="email" size={32} label={`Email ${site.email}`} />
           </a>
         </li>

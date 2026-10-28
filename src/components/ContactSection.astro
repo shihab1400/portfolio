@@ -12,7 +12,7 @@ import { site } from '../data/site';
       <p class="muted">{site.contact.intro}</p>
       <div class="direct">
         <h3>Message me here</h3>
-        <a href={site.emailLink} target="_blank" rel="noopener noreferrer">
+        <a href={site.emailLink} data-gmail={site.email} target="_blank" rel="noopener noreferrer">
           <Icon name="email" size={32} />
           <span>{site.email}</span>
         </a>
