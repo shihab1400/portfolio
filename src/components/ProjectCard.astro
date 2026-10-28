@@ -11,6 +11,8 @@ interface Props {
 const { project, headingLevel = 3 } = Astro.props;
 const { title, description, thumbnail, thumbnailAlt, technologies } = project.data;
 const Heading = `h${headingLevel}` as const;
+// Cards stay compact; the project page lists every technology.
+const MAX_TECH_TAGS = 5;
 ---
 
 <article class="card">
@@ -23,7 +25,8 @@ const Heading = `h${headingLevel}` as const;
     class="thumb"
   />
   <ul class="tags tech" role="list" aria-label="Technologies">
-    {technologies.map((tech) => <li>{tech}</li>)}
+    {technologies.slice(0, MAX_TECH_TAGS).map((tech) => <li>{tech}</li>)}
+    {technologies.length > MAX_TECH_TAGS && <li>+{technologies.length - MAX_TECH_TAGS} more</li>}
   </ul>
   <div class="body">
     <Heading class="title">

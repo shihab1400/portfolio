@@ -37,6 +37,13 @@ export const icons = {
     '<path d="M15 3h6v6m-11 5L21 3m-3 10v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>',
   ),
   code: lucide('<path d="m16 18 6-6-6-6M8 6l-6 6 6 6"/>'),
+  download: lucide('<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>'),
+  // Lucide glyph on a padded 32px viewBox so it sits at the same visual size as `email`.
+  phone: {
+    viewBox: '-4 -4 32 32',
+    mode: 'stroke',
+    body: '<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/>',
+  },
 } satisfies Record<string, IconDef>;
 
 export type IconName = keyof typeof icons;

@@ -12,7 +12,8 @@ const year = new Date().getFullYear();
     <div class="identity">
       <div class="brand-row">
         <Logo />
-        <a class="email" href={site.emailLink} target="_blank" rel="noopener noreferrer">{site.email}</a>
+        <a class="contact-link" href={site.emailLink} target="_blank" rel="noopener noreferrer">{site.email}</a>
+        <a class="contact-link" href={site.phoneLink}>{site.phoneDisplay}</a>
       </div>
       <p>{site.role}</p>
     </div>
@@ -31,6 +32,11 @@ const year = new Date().getFullYear();
         <li>
           <a href={site.emailLink} target="_blank" rel="noopener noreferrer">
             <Icon name="email" size={32} label={`Email ${site.email}`} />
+          </a>
+        </li>
+        <li>
+          <a href={site.phoneLink}>
+            <Icon name="phone" size={32} label={`Call ${site.phoneDisplay}`} />
           </a>
         </li>
       </ul>
@@ -60,13 +66,13 @@ const year = new Date().getFullYear();
     gap: 0 1.5rem;
   }
 
-  .email {
+  .contact-link {
     color: var(--color-text-muted);
     text-decoration: none;
     overflow-wrap: anywhere;
   }
 
-  .email:hover {
+  .contact-link:hover {
     color: var(--color-accent);
     text-decoration: underline;
   }

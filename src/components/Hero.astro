@@ -1,6 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import portrait from '../assets/portrait-hero.png';
+import cvUrl from '../content/Farhat_Anjam_CV.pdf?url';
+import Icon from './Icon.astro';
 import { site } from '../data/site';
 
 // "[...]" in the configured headline marks words to highlight.
@@ -13,7 +15,12 @@ const headlineParts = site.hero.headline.split(/\[(.+?)\]/);
       {headlineParts.map((part, i) => (i % 2 ? <span class="accent">{part}</span> : part))}
     </h1>
     <p class="muted">{site.hero.description}</p>
-    <a class="btn" href="/#contacts">Contact me !!</a>
+    <div class="actions">
+      <a class="btn" href="/#contacts">Contact me !!</a>
+      <a class="btn btn--muted" href={cvUrl} download="Farhat_Anjam_CV.pdf">
+        <Icon name="download" /> Download CV
+      </a>
+    </div>
   </div>
 
   <div class="visual">
@@ -69,6 +76,12 @@ const headlineParts = site.hero.headline.split(/\[(.+?)\]/);
   .intro p {
     max-width: 30rem;
     margin-block: 1.5rem;
+  }
+
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
   .visual {

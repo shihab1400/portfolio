@@ -13,6 +13,7 @@ export function personSchema(siteUrl: URL) {
     jobTitle: site.role,
     url: siteUrl.href,
     email: `mailto:${site.email}`,
+    telephone: site.phone,
     ...(sameAs.length > 0 && { sameAs }),
   };
 }

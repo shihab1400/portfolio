@@ -3,6 +3,8 @@
  * Text marked "placeholder" should be replaced with the owner's own content.
  */
 const email = "shihabcoc39@gmail.com";
+/** E.164 format, used for the tel: link and structured data. */
+const phone = "+8801568989213";
 
 export const site = {
     name: "Farhat",
@@ -14,6 +16,10 @@ export const site = {
     email,
     /** Opens a Gmail compose window instead of the visitor's default mail app (mailto:). */
     emailLink: `https://mail.google.com/mail/?view=cm&fs=1&to=${email}`,
+    phone,
+    /** Human-readable version of `phone` shown on the page. */
+    phoneDisplay: "+880 1568-989213",
+    phoneLink: `tel:${phone}`,
     locale: "en",
     ogLocale: "en_US",
     /** Twitter/X handle including "@", or undefined to omit `twitter:site`. */
