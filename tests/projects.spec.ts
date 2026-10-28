@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test';
 
-const PUBLISHED = ['portfolio', 'chertnodes', 'protectx', 'kahoot-answers-viewer'];
+const PUBLISHED = ['ainkhoj', 'amar-school', 'mindease', 'programming-contest', 'smart-multi-plug'];
 
 test('homepage shows exactly three featured projects', async ({ page }) => {
   await page.goto('/');
@@ -19,8 +19,8 @@ test('projects page lists every published project and no drafts', async ({ page 
 test('category filter narrows the list', async ({ page }) => {
   await page.goto('/projects/');
   const items = page.locator('[data-projects-grid] > li:visible');
-  await page.getByRole('button', { name: 'bot', exact: true }).click();
-  await expect(page.getByRole('button', { name: 'bot', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.getByRole('button', { name: 'iot', exact: true }).click();
+  await expect(page.getByRole('button', { name: 'iot', exact: true })).toHaveAttribute('aria-pressed', 'true');
   await expect(items).toHaveCount(1);
   await expect(page.locator('[data-filter-status]')).toHaveText('Showing 1 project.');
   await page.getByRole('button', { name: 'all', exact: true }).click();
@@ -53,10 +53,14 @@ test('each card opens its own details page with unique metadata', async ({ page 
   expect(descriptions.size).toBe(PUBLISHED.length);
 });
 
-test('optional live/repository links are omitted when not provided', async ({ page }) => {
-  await page.goto('/projects/protectx/');
+test('repository link is shown and the live link is omitted when not provided', async ({ page }) => {
+  // Ainkhoj has a repositoryUrl but no liveUrl.
+  await page.goto('/projects/ainkhoj/');
   await expect(page.getByRole('link', { name: /Live site/ })).toHaveCount(0);
-  await expect(page.getByRole('link', { name: /Source code/ })).toHaveCount(0);
+  await expect(page.getByRole('link', { name: /Source code/ })).toHaveAttribute(
+    'href',
+    'https://github.com/shihab1400/AinKhoj',
+  );
 });
 
 test('unknown and draft project slugs return 404', async ({ page }) => {

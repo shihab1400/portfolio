@@ -2,7 +2,7 @@ import { expect, test } from '@playwright/test';
 import { horizontalOverflow, isMobileProject } from './helpers';
 
 const WIDTHS = [320, 360, 375, 390, 430, 768, 1024, 1280, 1440, 1920];
-const PAGES = ['/', '/about/', '/projects/', '/projects/portfolio/', '/404'];
+const PAGES = ['/', '/about/', '/projects/', '/projects/ainkhoj/', '/404'];
 
 test.describe('responsive layout', () => {
   test.beforeEach(({}, testInfo) => test.skip(isMobileProject(testInfo), 'desktop engines resize freely'));

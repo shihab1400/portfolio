@@ -106,10 +106,18 @@ test('no broken internal links', async ({ page }, testInfo) => {
     seen.add(path);
     const response = await page.goto(path);
     expect(response?.status(), `status of ${path}`).toBe(200);
-    const paths = await page.$$eval('a[href^="/"]', (links) =>
+    const paths = await page.$$eval('a[href^="/"]:not([download])', (links) =>
       links.map((a) => new URL((a as HTMLAnchorElement).href).pathname),
     );
     queue.push(...paths.filter((p) => !seen.has(p)));
+    // Download links (e.g. the CV) would trigger a download in page.goto, so fetch them instead.
+    const downloads = await page.$$eval('a[href^="/"][download]', (links) =>
+      links.map((a) => new URL((a as HTMLAnchorElement).href).pathname),
+    );
+    for (const file of downloads.filter((p) => !seen.has(p))) {
+      seen.add(file);
+      expect((await page.request.get(file)).status(), `status of ${file}`).toBe(200);
+    }
   }
   expect(seen.size).toBeGreaterThanOrEqual(7);
 });

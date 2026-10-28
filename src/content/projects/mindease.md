@@ -7,12 +7,12 @@ technologies:
     [
         Next.js,
         NestJS,
-        TypeScript,
         PostgreSQL,
-        Prisma,
-        Tailwind CSS,
         Gemini API,
         SSLCommerz,
+        TypeScript,
+        Prisma,
+        Tailwind CSS,
         Playwright,
     ]
 category: Web app

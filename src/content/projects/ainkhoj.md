@@ -6,18 +6,18 @@ thumbnailAlt: Ainkhoj chat screen with a history sidebar, an answer showing a la
 technologies:
     [
         Next.js,
+        NestJS,
+        LM Studio,
+        Firestore,
+        ChromaDB,
         React,
         TypeScript,
-        NestJS,
         Firebase Auth,
-        Firestore,
         Python,
         FastAPI,
-        ChromaDB,
         Sentence Transformers,
         Gemini API,
         Gemma,
-        LM Studio,
     ]
 category: AI / RAG
 featured: true

@@ -22,7 +22,7 @@ test('defaults to dark and persists the chosen theme across pages and reloads', 
 
   await page.reload();
   expect(await themeOf(page)).toBe('light');
-  await page.goto('/projects/portfolio/');
+  await page.goto('/projects/ainkhoj/');
   expect(await themeOf(page)).toBe('light');
 
   await toggleTheme(page, mobile);

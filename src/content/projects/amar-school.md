@@ -4,7 +4,7 @@ description: A tutor management system where trainers certify tutors, certified 
 thumbnail: ./amar-school.png
 thumbnailAlt: Amar School landing page with a dark hero section, a "Top rated courses" panel and platform stats for courses, certified tutors, students and average rating
 technologies:
-    [ASP.NET Core MVC, C#, .NET 8, Entity Framework Core, SQL Server, Razor, Bootstrap 5, Swagger]
+    [ASP.NET Core MVC, SQL Server, .NET 8, Bootstrap 5, Entity Framework Core, C#, Razor, Swagger]
 category: Web app
 featured: true
 repositoryUrl: https://github.com/shihab1400/dotNet_Tutor_MS

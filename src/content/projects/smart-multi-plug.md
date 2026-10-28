@@ -3,7 +3,7 @@ title: Smart Multi-Plug
 description: An ESP32 smart plug with four relay-controlled outlets, countdown timers and a temperature alarm, controlled from a web dashboard over MQTT.
 thumbnail: ./smart-multi-plug.png
 thumbnailAlt: Smart Home dashboard with a status bar, temperature and humidity cards, and four relay cards with on/off toggles and timer inputs
-technologies: [ESP32, Arduino, C++, MQTT, HiveMQ Cloud, MQTT.js, JavaScript, HTML, CSS, DHT22]
+technologies: [ESP32, Arduino, HiveMQ Cloud, MQTT, JavaScript, DHT22, C++, MQTT.js, HTML, CSS]
 category: IoT
 featured: true
 repositoryUrl: https://github.com/shihab1400/Microprocessor_SmartMultiplug
