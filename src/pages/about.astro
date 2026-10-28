@@ -4,8 +4,10 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import SectionHeading from '../components/SectionHeading.astro';
 import SkillGroups from '../components/SkillGroups.astro';
 import Icon from '../components/Icon.astro';
+import PublicationList from '../components/PublicationList.astro';
 import portrait from '../assets/portrait-about.png';
 import { about } from '../data/about';
+import { publications } from '../data/publications';
 import { site } from '../data/site';
 import { personSchema } from '../lib/structured-data';
 
@@ -14,7 +16,7 @@ const [intro, ...sections] = about.sections;
 
 <BaseLayout
   title="About me"
-  description={`About ${site.name}: background, interests, technical skills and approach to front-end development.`}
+  description={`About ${site.name}: background, interests, technical skills, publications and approach to front-end development.`}
   jsonLd={{
     '@context': 'https://schema.org',
     '@type': 'ProfilePage',
@@ -48,6 +50,7 @@ const [intro, ...sections] = about.sections;
     <nav class="toc" aria-label="On this page">
       <ul role="list">
         <li><a href="#skills">skills</a></li>
+        {publications.length > 0 && <li><a href="#publications">publications</a></li>}
         {sections.map((s) => <li><a href={`#${s.id}`}>{s.heading.toLowerCase()}</a></li>)}
       </ul>
     </nav>
@@ -56,6 +59,15 @@ const [intro, ...sections] = about.sections;
       <h2 id="skills"><span class="accent" aria-hidden="true">#</span>Technical expertise</h2>
       <SkillGroups />
     </section>
+
+    {
+      publications.length > 0 && (
+        <section class="block" aria-labelledby="publications">
+          <h2 id="publications"><span class="accent" aria-hidden="true">#</span>Publications</h2>
+          <PublicationList />
+        </section>
+      )
+    }
 
     {
       sections.map((section) => (

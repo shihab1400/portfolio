@@ -1,0 +1,102 @@
+---
+import Icon from './Icon.astro';
+import { publications } from '../data/publications';
+
+interface Props {
+  headingLevel?: 2 | 3;
+}
+
+const { headingLevel = 3 } = Astro.props;
+const Heading = `h${headingLevel}` as const;
+---
+
+<ul class="list" role="list">
+  {
+    publications.map((pub) => (
+      <li class="card">
+        <span class="tags type">{pub.type}</span>
+        <Heading class="title">
+          {/* The link's ::after covers the whole card, so the card has a single interactive element. */}
+          <a href={pub.url} target="_blank" rel="noopener noreferrer">
+            {pub.title}
+            <span class="sr-only">(opens {pub.source} in a new tab)</span>
+          </a>
+        </Heading>
+        <span class="more" aria-hidden="true">
+          Read on {pub.source} <Icon name="external-link" size={16} />
+        </span>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .list {
+    display: grid;
+    gap: 1rem;
+    max-width: 48rem;
+  }
+
+  .card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1rem;
+    border: 1px solid var(--color-text-muted);
+    background: var(--color-bg);
+    transition:
+      border-color 0.2s var(--ease),
+      transform 0.2s var(--ease);
+  }
+
+  .card:hover,
+  .card:focus-within {
+    border-color: var(--color-accent);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card:hover {
+      transform: translateY(-3px);
+    }
+  }
+
+  .card:focus-within {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 3px;
+  }
+
+  .title {
+    font-size: clamp(1.15rem, 1rem + 0.6vw, 1.4rem);
+    font-weight: 500;
+  }
+
+  .title a {
+    text-decoration: none;
+  }
+
+  .title a::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+  }
+
+  /* The card outline replaces the link's own focus ring. */
+  .title a:focus-visible {
+    outline: none;
+  }
+
+  .more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    width: fit-content;
+    padding: 0.4rem 0.9rem;
+    border: 1px solid var(--color-accent);
+    font-weight: 500;
+  }
+
+  .card:hover .more {
+    background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  }
+</style>
