@@ -1,5 +1,6 @@
 ---
 import Icon from './Icon.astro';
+import { site } from '../data/site';
 import { socialLinks } from '../data/social-links';
 ---
 
@@ -15,6 +16,16 @@ import { socialLinks } from '../data/social-links';
         </li>
       ))
     }
+    <li>
+        <a href={site.emailLink} data-gmail={site.email} target="_blank" rel="noopener noreferrer">
+        <Icon name="email" size={32} label={`Email ${site.email}`} />
+        </a>
+    </li>
+    <li>
+        <a href={site.phoneLink}>
+        <Icon name="phone" size={32} label={`Call ${site.phoneDisplay}`} />
+        </a>
+    </li>
   </ul>
 </aside>
 
